@@ -70,7 +70,7 @@ $('unit').onclick=()=>{F=!F;store.set('f',F);render()};
 $('fav').onclick=()=>{const i=favs.findIndex(f=>f.name===cur.name);i>=0?favs.splice(i,1):favs.push(cur);store.set('favs',favs);render()};
 $('loc').onclick=()=>{if(!navigator.geolocation)return alert('Location support nahi hai');navigator.geolocation.getCurrentPosition(p=>load({name:'My location',country:'',lat:p.coords.latitude,lon:p.coords.longitude}),()=>alert('Location permission nahi mili. Shehar ka naam search karein.'),{timeout:10000})};
 let tm;$('q').oninput=e=>{clearTimeout(tm);const v=e.target.value.trim();if(v.length<2){$('sug').style.display='none';return}
-  tm=setTimeout(async()=>{try{const r=await(await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=5`)).json();
+  tm=setTimeout(async()=>{try{const r=await(await fetch(`${API_BASE}/api/search?name=${encodeURIComponent(v)}`)).json();
    const s=$('sug');s.innerHTML=(r.results||[]).map((x,i)=>`<div data-i="${i}">${x.name}${x.admin1?', '+x.admin1:''}, ${x.country||''}</div>`).join('')||'<div>Koi shehar nahi mila</div>';s.style.display='block';
    s.querySelectorAll('[data-i]').forEach(el=>el.onclick=()=>{const x=r.results[el.dataset.i];s.style.display='none';$('q').value='';load({name:x.name,country:x.country||'',lat:x.latitude,lon:x.longitude})})}catch(e){}},350)};
 
